@@ -28,7 +28,7 @@ let char_list_to_string cs =
 let insert_revert x0 rest1 =
   let (left, right) = span (fun x -> x > x0) rest1 in
   match (List.rev left, List.rev right) with
-  | ([], _) -> raise (Failure "Chpoke")
+  | ([], revRight) -> List.concat [revRight; [x0]]
   | (l :: revLeft, revRight) -> List.concat [[l]; revRight; [x0]; revLeft]
                 
 let next_permutation word = 
