@@ -25,6 +25,12 @@ let string_to_char_list s =
 let char_list_to_string cs = 
   String.concat "" (List.map (fun x -> String.make 1 x) cs)
 
+let insert_revert x0 rest1 =
+  let (left, right) = span (fun x -> x > x0) rest1 in
+  (match (List.rev left, List.rev right) with
+   | ([], _) -> raise (Failure "Chpoke")
+   | (l :: revLeft, revRight) -> List.concat [[l]; revRight; [x0]; revLeft])
+                
 let next_permutation word = 
   let rec next_permutation_impl char_list =
     match char_list with
@@ -34,18 +40,9 @@ let next_permutation word =
         | (false, rest1) -> 
            (match rest1 with
             | [] -> (false, x0 :: rest1)
-            | x1 :: _ ->
-               if x0 < x1
-               then 
-                 let (left, right) = span (fun x -> x > x0) rest1 in
-                 let chunk = 
-                   (match (List.rev left, List.rev right) with
-                    | ([], _) -> raise (Failure "Chpoke")
-                    | (l :: revLeft, revRight) -> List.concat [[l]; revRight; [x0]; revLeft])
-                 in (match chunk with
-                     | (x2 :: rest2) -> (true, x2 :: rest2)
-                     | [] -> raise (Failure "Chpoke"))
-               else (false, x0 :: rest1)))
+            | x1 :: _ -> if x0 < x1 
+                         then (true, insert_revert x0 rest1)
+                         else (false, x0 :: rest1)))
     | [] -> (false, [])
   in
   let char_list = string_to_char_list word in
