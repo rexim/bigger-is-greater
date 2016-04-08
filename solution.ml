@@ -36,11 +36,8 @@ let next_permutation word =
     match char_list with
     | x0 :: rest0 -> 
        (match next_permutation_impl rest0 with
-        | (true, rest1) -> (true, x0 :: rest1)
-        | (false, rest1) -> 
-           (match rest1 with
-            | x1 :: _ when x0 < x1 -> (true, insert_revert x0 rest1)
-            | _ -> (false, x0 :: rest1)))
+        | (false, x1 :: rest1) when x0 < x1 -> (true, insert_revert x0 (x1 :: rest1))
+        | (flag, rest1) -> (flag, x0 :: rest1))
     | [] -> (false, [])
   in
   let char_list = string_to_char_list word in
